@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: rahbar
+
+resources:
+  - ../../base
+
+images:
+  - name: rahbar-api
+    newName: omamamubashir/rahbar-api
+    newTag: v1.0.0
+  - name: rahbar-indexer
+    newName: omamamubashir/rahbar-indexer
+    newTag: v1.0.0
+  - name: rahbar-ui
+    newName: omamamubashir/rahbar-ui
+    newTag: v1.0.0
+
