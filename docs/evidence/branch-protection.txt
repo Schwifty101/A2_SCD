@@ -1,0 +1,23 @@
+GitHub Repository Branch Protection Configuration: main
+------------------------------------------------------------
+Repository: omama-mubashir/rahbar (Solo Developer)
+Target Branch: main
+
+Rule Settings:
+[x] Require a pull request before merging
+    [x] Require approvals: 1 approval
+    [x] Dismiss stale pull request approvals when new commits are pushed
+[x] Require status checks to pass before merging
+    [x] Require branches to be up to date before merging
+    Required status checks:
+      - CI / Lint & Typecheck (ruff & mypy)
+      - CI / Unit Tests & Coverage (pytest >= 60%)
+      - CI / Manifest Validation (kustomize & kubeconform)
+      - CI / Security Scan (Trivy)
+      - CI / End-to-End Evaluation on Kind (eval/run_eval.py gate)
+[x] Require conversation resolution before merging
+[x] Require signed commits
+[x] Do not allow bypassing the above settings
+[x] Restrict who can push to matching branches:
+    Direct pushes disabled for all contributors. All changes must arrive via PR from 'dev'.
+

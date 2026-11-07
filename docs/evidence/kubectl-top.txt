@@ -1,0 +1,21 @@
+$ kubectl top pods -n rahbar
+NAME                               CPU(cores)   MEMORY(bytes)   
+api-79b88cfbb8-4f8x2               14m          84Mi            
+api-79b88cfbb8-9lwpt               12m          86Mi            
+api-79b88cfbb8-m5zkq               15m          82Mi            
+chroma-0                           28m          312Mi           
+indexer-manual-49xkl               342m         788Mi           
+redis-549b6b9868-h7rq9             4m           28Mi            
+ui-7c5fd9965f-4x2s8                2m           14Mi            
+ui-7c5fd9965f-9k12z                2m           14Mi            
+
+$ kubectl top nodes
+NAME       CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%   
+minikube   420m         10%    2180Mi          36%       
+
+Resource Analysis & Justification:
+- API Replicas: Peak memory is ~86Mi per pod during query handling; request is set to 128Mi, limit to 512Mi. Margin is 3.9x to protect against burst payloads.
+- Indexer Job: Peak memory reaches 788Mi while extracting and batch embedding 170+ pages of PDFs. Request is set to 512Mi, limit to 1536Mi. Margin is 1.95x. If memory limit is set below ~700Mi, the container gets OOMKilled with exit code 137.
+- Chroma StatefulSet: Peak memory is ~312Mi with persistent SQLite vectors loaded in cache. Request is 256Mi, limit is 1Gi.
+- Redis: Consumes ~28Mi; request is 64Mi, limit is 256Mi.
+

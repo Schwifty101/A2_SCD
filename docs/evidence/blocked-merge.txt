@@ -1,0 +1,23 @@
+Pull Request #4: Evaluate chunk size regression gate
+Branch: dev -> main
+Status: Blocked / Merging is blocked
+
+Review summary:
+  1 change requested / Status checks have failed
+  
+Check Runs:
+  [X] CI / End-to-End Evaluation on Kind — FAILED in 2m 14s
+      Logs:
+        Evaluating RAHBAR against eval/golden.yaml
+        GATE FAILED:
+        - recall@5 dropped by 0.0820 (allowed max: 0.0500): 0.8466 vs baseline 0.9286
+        - Process completed with exit code 1.
+  [v] CI / Lint & Typecheck — Passed in 18s
+  [v] CI / Unit Tests & Coverage — Passed in 24s (Coverage: 74.2%)
+  [v] CI / Manifest Validation — Passed in 12s
+  [v] CI / Security Scan (Trivy) — Passed in 45s (0 vulnerabilities with fix)
+
+UI State:
+  [ Merge pull request ] button is GREYED OUT / DISABLED.
+  Message: "Required status check 'CI / End-to-End Evaluation on Kind' was not successful. Merging can only be performed when all required checks pass."
+
