@@ -6,6 +6,8 @@ from __future__ import annotations
 
 import logging
 import re
+from typing import Any, cast
+
 import httpx
 
 from ..config import Settings
@@ -41,7 +43,8 @@ class ChromaRetriever:
         except Exception as exc:
             log.warning("Ollama query embedding failed (%s), falling back to unit vector", exc)
         # Deterministic unit vector fallback for dev / testing
-        import hashlib, math
+        import hashlib
+        import math
         h = hashlib.sha256(query.encode()).digest()
         raw = [(b / 255.0) * 2.0 - 1.0 for b in h]
         norm = math.sqrt(sum(x * x for x in raw)) or 1.0
@@ -56,21 +59,22 @@ class ChromaRetriever:
         query_vector = self._embed_query(question)
 
         # Check if the user specifically asked about an older / repealed version
-        asks_older = bool(re.search(r"\b(2023|previous|older|repealed|former|prior)\b", question, re.I))
+        asks_older = bool(re.search(r"\b(2023|previous|older|repealed|former|prior)\b", question, re.IGNORECASE))
         metadata_filter = None if asks_older else {"superseded": False}
 
         results = collection.query(
-            query_embeddings=[query_vector],
+            query_embeddings=cast(Any, [query_vector]),
             n_results=k,
-            where=metadata_filter,
+            where=cast(Any, metadata_filter),
             include=["documents", "metadatas", "distances"],
         )
 
         passages: list[Passage] = []
-        ids = results.get("ids", [[]])[0]
-        docs = results.get("documents", [[]])[0]
-        metas = results.get("metadatas", [[]])[0]
-        distances = results.get("distances", [[]])[0]
+        res = cast(dict[str, Any], results)
+        ids = res.get("ids", [[]])[0] or []
+        docs = res.get("documents", [[]])[0] or []
+        metas = res.get("metadatas", [[]])[0] or []
+        distances = res.get("distances", [[]])[0] or []
 
         for chunk_id, text, meta, dist in zip(ids, docs, metas, distances):
             # Chroma returns cosine distance; convert to similarity

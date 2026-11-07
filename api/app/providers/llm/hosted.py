@@ -12,7 +12,7 @@ import httpx
 from pydantic import ValidationError
 
 from ...config import Settings
-from ...schemas import Answer, Citation, Passage
+from ...schemas import Answer, Passage
 from .ollama import SYSTEM_INSTRUCTION, _safe_fallback
 
 log = logging.getLogger("rahbar.llm.hosted")

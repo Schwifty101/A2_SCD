@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+
 from .models import Document, Page
 
 
@@ -13,11 +14,11 @@ def _clean_page_text(text: str) -> str:
 
     # Common repeating header/footer patterns
     header_footer_patterns = [
-        re.compile(r"^\s*page\s+\d+(\s+of\s+\d+)?\s*$", re.I),
+        re.compile(r"^\s*page\s+\d+(\s+of\s+\d+)?\s*$", re.IGNORECASE),
         re.compile(r"^\s*\d+\s*/\s*\d+\s*$"),
-        re.compile(r"^\s*fast-nuces\s*[-–]\s*academic\s+rules\s*$", re.I),
-        re.compile(r"^\s*national\s+university\s+of\s+computer\s+and\s+emerging\s+sciences\s*$", re.I),
-        re.compile(r"^\s*student\s+handbook\s+2026\s*$", re.I),
+        re.compile(r"^\s*fast-nuces\s*[-–]\s*academic\s+rules\s*$", re.IGNORECASE),
+        re.compile(r"^\s*national\s+university\s+of\s+computer\s+and\s+emerging\s+sciences\s*$", re.IGNORECASE),
+        re.compile(r"^\s*student\s+handbook\s+2026\s*$", re.IGNORECASE),
     ]
 
     for line in lines:

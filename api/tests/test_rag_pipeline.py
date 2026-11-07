@@ -5,16 +5,11 @@ Offline only: no cluster, no network, no live model.
 
 from __future__ import annotations
 
-import pytest
-from fastapi.testclient import TestClient
-
 from app.config import Settings
-from app.providers.llm.base import LLMProvider
 from app.providers.llm.ollama import _safe_fallback
-from app.retrieval.base import Retriever
 from app.schemas import Answer, Citation, Passage
 from app.services.answer import answer_question
-from app.services.cache import SemanticCache, never_cache
+from app.services.cache import never_cache
 
 
 class PoisonedRetriever:

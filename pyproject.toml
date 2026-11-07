@@ -2,4 +2,17 @@
 pythonpath = ["api", "indexer"]
 testpaths = ["api/tests", "indexer/tests"]
 addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning:starlette.*"]
 
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+check_untyped_defs = true

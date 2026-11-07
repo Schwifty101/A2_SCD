@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import hashlib
 import re
+
 from .models import Chunk, Document
 
 HEADING_PATTERN = re.compile(
-    r"^(?:#{1,6}\s+|(?:\d+\.)+\d*\s+|[A-Z][A-Za-z0-9\s]{2,40}:?$)", re.M
+    r"^(?:#{1,6}\s+|(?:\d+\.)+\d*\s+|[A-Z][A-Za-z0-9\s]{2,40}:?$)", re.MULTILINE
 )
 
 

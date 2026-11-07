@@ -8,6 +8,7 @@ They answer different questions:
 from __future__ import annotations
 
 import logging
+
 from fastapi import APIRouter, Request, Response, status
 
 from ..config import Settings

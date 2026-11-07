@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import logging
+
 import httpx
+
 from .config import IndexerSettings
 
 log = logging.getLogger("rahbar.indexer.embed")

@@ -24,7 +24,7 @@ import json
 import re
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import quote, urljoin, urlsplit
@@ -124,7 +124,7 @@ def fetch(force: bool) -> int:
                     "name": name, "url": url, "file": file, "bytes": len(response.content),
                     "sha256": hashlib.sha256(response.content).hexdigest(),
                     "content_type": content_type.split(";")[0],
-                    "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                    "fetched_at": datetime.now(UTC).strftime("%Y-%m-%d"),
                     "doc_version": doc.get("doc_version", "unknown"),
                     "superseded": bool(doc.get("superseded", False)),
                 })
