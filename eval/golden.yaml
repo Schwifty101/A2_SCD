@@ -112,3 +112,4 @@ questions:
     relevant:
       - {source: academic-rules-handbook-jun-2026.pdf, section: "2.3 Course Registration and Prerequisites"}
     expect: "prerequisite"
+
