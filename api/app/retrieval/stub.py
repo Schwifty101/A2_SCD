@@ -6,7 +6,6 @@ Switch to RETRIEVER=chroma in the ConfigMap once your cluster index exists.
 
 from __future__ import annotations
 
-import re
 from ..schemas import Passage
 
 _STUB_PASSAGES = [
