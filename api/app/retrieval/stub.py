@@ -189,15 +189,49 @@ class StubRetriever:
             return [p.model_copy() for p in _ATTENDANCE_PASSAGES[:k]]
 
         # Academic warning, probation, CGPA, dismissal queries
-        if any(w in q for w in ["warning", "probation", "cgpa", "gpa", "dismissal", "standing", "academic"]):
+        if any(
+            w in q
+            for w in ["warning", "probation", "cgpa", "gpa", "dismissal", "standing", "academic"]
+        ):
             return [p.model_copy() for p in _ACADEMIC_STANDING_PASSAGES[:k]]
 
         # Policy comparison, 2023 vs 2026, drop, withdrawal queries
-        if any(w in q for w in ["2023", "2026", "drop", "withdraw", "withdrawal", "previous", "former", "repeal"]):
+        if any(
+            w in q
+            for w in [
+                "2023",
+                "2026",
+                "drop",
+                "withdraw",
+                "withdrawal",
+                "previous",
+                "former",
+                "repeal",
+            ]
+        ):
             return [p.model_copy() for p in _VERSION_POLICY_PASSAGES[:k]]
 
         # Grading scale, B+, Dean's List, prerequisites, credit hours, passing marks queries
-        if any(w in q for w in ["b+", "grade", "grading", "scale", "honour", "dean's list", "prerequisite", "credit", "pass", "fail", "marks", "absolute", "absolutes", "exam", "score"]):
+        if any(
+            w in q
+            for w in [
+                "b+",
+                "grade",
+                "grading",
+                "scale",
+                "honour",
+                "dean's list",
+                "prerequisite",
+                "credit",
+                "pass",
+                "fail",
+                "marks",
+                "absolute",
+                "absolutes",
+                "exam",
+                "score",
+            ]
+        ):
             return [p.model_copy() for p in _GRADING_PASSAGES[:k]]
 
         # Any off-topic query (movies, space, general chat, ungrounded questions)

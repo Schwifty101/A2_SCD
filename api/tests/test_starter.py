@@ -31,7 +31,7 @@ def test_ask_returns_the_response_contract(client: TestClient) -> None:
 
     r = client.post("/api/ask", json={"question": "What is the attendance requirement?"})
     assert r.status_code == 200
-    body = AskResponse(**r.json())          # raises if any field is missing or mistyped
+    body = AskResponse(**r.json())  # raises if any field is missing or mistyped
     assert body.provider == "stub"
     assert len(body.retrieved) == 3
 
@@ -45,8 +45,9 @@ def test_every_citation_names_a_retrieved_passage(client: TestClient) -> None:
 
 
 def test_request_id_is_echoed(client: TestClient) -> None:
-    r = client.post("/api/ask", json={"question": "Echo my id please"},
-                    headers={"X-Request-ID": "test-123"})
+    r = client.post(
+        "/api/ask", json={"question": "Echo my id please"}, headers={"X-Request-ID": "test-123"}
+    )
     assert r.headers["X-Request-ID"] == "test-123"
     assert r.json()["request_id"] == "test-123"
 

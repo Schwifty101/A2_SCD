@@ -78,12 +78,19 @@ def _extract_html(path: Path) -> list[Page]:
             return "\n" + "\n".join(md_rows) + "\n"
         return ""
 
-    content = re.sub(r"<table[^>]*>.*?</table>", table_repl, content, flags=re.DOTALL | re.IGNORECASE)
+    content = re.sub(
+        r"<table[^>]*>.*?</table>", table_repl, content, flags=re.DOTALL | re.IGNORECASE
+    )
 
     # Strip remaining HTML tags
     clean_text = re.sub(r"<[^>]+>", " ", content)
     # Unescape common HTML entities
-    clean_text = clean_text.replace("&nbsp;", " ").replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">")
+    clean_text = (
+        clean_text.replace("&nbsp;", " ")
+        .replace("&amp;", "&")
+        .replace("&lt;", "<")
+        .replace("&gt;", ">")
+    )
     clean_text = re.sub(r"[ \t]+", " ", clean_text)
     clean_text = re.sub(r"\n\s*\n+", "\n\n", clean_text).strip()
 

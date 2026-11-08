@@ -14,4 +14,6 @@ router = APIRouter(prefix="/api")
 def ask(body: AskRequest, request: Request) -> AskResponse:
     state = request.app.state
     cache = getattr(state, "cache", None)
-    return answer_question(body.question, state.retriever, state.provider, state.settings, cache=cache)
+    return answer_question(
+        body.question, state.retriever, state.provider, state.settings, cache=cache
+    )

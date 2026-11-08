@@ -34,8 +34,11 @@ def embed(texts: list[str], settings: IndexerSettings) -> list[list[float]]:
                 embeddings = data.get("embeddings") or []
                 all_vectors.extend(embeddings)
         except Exception as exc:
-            log.warning("Ollama embed call failed (%s). Generating deterministic vectors for test/dev.", exc)
+            log.warning(
+                "Ollama embed call failed (%s). Generating deterministic vectors for test/dev.", exc
+            )
             from .dummy import fake_vector
+
             for t in batch:
                 all_vectors.append(fake_vector(t))
 

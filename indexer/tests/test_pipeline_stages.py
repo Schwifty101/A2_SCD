@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock
 
-from pipeline.clean import clean
 from pipeline.chunk import chunk
+from pipeline.clean import clean
 from pipeline.config import get_settings
 from pipeline.embed import embed
 from pipeline.models import Chunk, Document, Page

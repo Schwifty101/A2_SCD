@@ -28,8 +28,8 @@ def _bool(name: str, default: bool) -> bool:
 @dataclass(frozen=True)
 class Settings:
     # Which implementations to load. "stub" needs no cluster, no model, no network.
-    retriever: str = "stub"          # RETRIEVER: stub | chroma
-    llm_provider: str = "stub"       # LLM_PROVIDER: stub | ollama-host | ollama-incluster | hosted
+    retriever: str = "stub"  # RETRIEVER: stub | chroma
+    llm_provider: str = "stub"  # LLM_PROVIDER: stub | ollama-host | ollama-incluster | hosted
 
     # The embedding pin (section 4.4). The indexer reads the same ConfigMap key.
     embed_model: str = "nomic-embed-text"
@@ -43,16 +43,16 @@ class Settings:
     redis_host: str = "redis"
     redis_port: int = 6379
     cache_enabled: bool = True
-    cache_threshold: float = 0.90    # Cosine similarity hit threshold
+    cache_threshold: float = 0.90  # Cosine similarity hit threshold
 
     # Retrieval and generation
     top_k: int = 5
     temperature: float = 0.2
-    relevance_floor: float = 0.65    # Minimum similarity required; below this, abstain honestly
+    relevance_floor: float = 0.65  # Minimum similarity required; below this, abstain honestly
     llm_model: str = "llama3.2:3b"
     ollama_url: str = "http://host.minikube.internal:11434"
-    hosted_base_url: str = ""        # e.g. an OpenAI-compatible endpoint
-    llm_api_key: str = field(default="", repr=False)   # from the Secret; never log it
+    hosted_base_url: str = ""  # e.g. an OpenAI-compatible endpoint
+    llm_api_key: str = field(default="", repr=False)  # from the Secret; never log it
 
     log_level: str = "INFO"
 

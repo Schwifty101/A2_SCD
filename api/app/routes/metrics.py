@@ -32,8 +32,12 @@ GENERATION_LATENCY = Histogram(
     buckets=(0.1, 0.5, 1, 2, 5, 10, 20, 40),
 )
 CACHE_HITS = Counter("rahbar_cache_hits_total", "Semantic cache hits")
-ABSTENTIONS = Counter("rahbar_abstentions_total", "Questions declined due to lack of relevant evidence")
-FALLBACKS = Counter("rahbar_fallbacks_total", "Safe fallback responses triggered on schema or timeout error")
+ABSTENTIONS = Counter(
+    "rahbar_abstentions_total", "Questions declined due to lack of relevant evidence"
+)
+FALLBACKS = Counter(
+    "rahbar_fallbacks_total", "Safe fallback responses triggered on schema or timeout error"
+)
 TOKENS_IN = Counter("rahbar_tokens_in_total", "Tokens ingested in prompt")
 TOKENS_OUT = Counter("rahbar_tokens_out_total", "Tokens generated in responses")
 

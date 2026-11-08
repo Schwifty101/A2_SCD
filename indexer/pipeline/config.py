@@ -8,11 +8,11 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class IndexerSettings:
-    embed_model: str        # EMBED_MODEL: must equal the API's value (section 4.4)
+    embed_model: str  # EMBED_MODEL: must equal the API's value (section 4.4)
     chroma_host: str
     chroma_port: int
     collection: str
-    corpus_dir: str         # where the documents and _index.json sit inside the Job's pod
+    corpus_dir: str  # where the documents and _index.json sit inside the Job's pod
     chunk_size: int
     chunk_overlap: int
     ollama_url: str

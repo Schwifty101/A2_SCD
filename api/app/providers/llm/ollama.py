@@ -54,7 +54,9 @@ class OllamaProvider:
                 f"[Passage {idx}] Source: {p.source} | Section: {p.section} | Page: {p.page or 'N/A'}\n"
                 f"<<<EVIDENCE\n{p.text}\nEVIDENCE>>>"
             )
-        evidence_block = "\n\n".join(evidence_lines) if evidence_lines else "No relevant passages found."
+        evidence_block = (
+            "\n\n".join(evidence_lines) if evidence_lines else "No relevant passages found."
+        )
 
         user_content = (
             f"Here is the retrieved context:\n{evidence_block}\n\n"
@@ -100,7 +102,11 @@ class OllamaProvider:
 
             except (ValidationError, json.JSONDecodeError) as val_err:
                 last_error = f"Validation failed: {val_err}"
-                log.warning("Attempt %d validation failure on Ollama response: %s. Retrying...", attempt, val_err)
+                log.warning(
+                    "Attempt %d validation failure on Ollama response: %s. Retrying...",
+                    attempt,
+                    val_err,
+                )
             except httpx.TimeoutException as time_err:
                 last_error = f"LLM timeout after {self.timeout}s: {time_err}"
                 log.error("Attempt %d timeout calling Ollama: %s", attempt, time_err)

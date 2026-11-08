@@ -21,8 +21,17 @@ from .models import Chunk
 
 
 def log(msg: str, **fields: object) -> None:
-    print(json.dumps({"ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                      "logger": "rahbar.indexer", "msg": msg, **fields}), flush=True)
+    print(
+        json.dumps(
+            {
+                "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "logger": "rahbar.indexer",
+                "msg": msg,
+                **fields,
+            }
+        ),
+        flush=True,
+    )
 
 
 def _front_matter(path: Path) -> dict[str, str]:
@@ -49,8 +58,14 @@ def discover(corpus_dir: str) -> list[tuple[Path, str, bool]]:
     index = root / "_index.json"
     if index.exists():
         entries = json.loads(index.read_text(encoding="utf-8"))
-        return [(root / e["file"], str(e.get("doc_version", "unknown")),
-                 bool(e.get("superseded", False))) for e in entries]
+        return [
+            (
+                root / e["file"],
+                str(e.get("doc_version", "unknown")),
+                bool(e.get("superseded", False)),
+            )
+            for e in entries
+        ]
     found = []
     for path in sorted(root.glob("*")):
         if path.suffix.lower() not in {".pdf", ".md", ".html", ".txt"}:
@@ -58,8 +73,13 @@ def discover(corpus_dir: str) -> list[tuple[Path, str, bool]]:
         if path.name.lower().startswith("readme"):
             continue
         meta = _front_matter(path) if path.suffix.lower() == ".md" else {}
-        found.append((path, meta.get("doc_version", "unknown"),
-                      meta.get("superseded", "false").lower() == "true"))
+        found.append(
+            (
+                path,
+                meta.get("doc_version", "unknown"),
+                meta.get("superseded", "false").lower() == "true",
+            )
+        )
     return found
 
 
@@ -88,9 +108,14 @@ def main() -> int:
     parser.add_argument("--dummy", action="store_true", help="write three fake chunks")
     args = parser.parse_args()
     settings = get_settings()
-    log("indexer starting", dummy=args.dummy, embed_model=settings.embed_model,
-        collection=settings.collection, chroma=f"{settings.chroma_host}:{settings.chroma_port}",
-        pod=os.environ.get("HOSTNAME", "-"))
+    log(
+        "indexer starting",
+        dummy=args.dummy,
+        embed_model=settings.embed_model,
+        collection=settings.collection,
+        chroma=f"{settings.chroma_host}:{settings.chroma_port}",
+        pod=os.environ.get("HOSTNAME", "-"),
+    )
     started = time.perf_counter()
     try:
         if args.dummy:

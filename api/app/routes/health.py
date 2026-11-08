@@ -77,6 +77,7 @@ def readyz(request: Request, response: Response) -> dict[str, object]:
     if settings.cache_enabled:
         try:
             import redis
+
             r_client = redis.Redis(
                 host=settings.redis_host,
                 port=settings.redis_port,

@@ -23,9 +23,9 @@ import yaml
 HERE = Path(__file__).resolve().parent
 
 # The gate from section 5.4. Change these only with a reason written in docs/PIPELINE.md.
-MAX_RECALL5_DROP = 0.05        # recall@5 may fall at most 5 points below the baseline
-MIN_CITATION_VALIDITY = 0.95   # at least 95% of citations must match retrieved passages
-REQUIRED_ABSTENTION = 1.0      # every must-abstain question must be declined
+MAX_RECALL5_DROP = 0.05  # recall@5 may fall at most 5 points below the baseline
+MIN_CITATION_VALIDITY = 0.95  # at least 95% of citations must match retrieved passages
+REQUIRED_ABSTENTION = 1.0  # every must-abstain question must be declined
 
 
 def load_golden(path: Path) -> list[dict]:
@@ -131,9 +131,7 @@ def summarise(rows: list[dict]) -> dict:
     cit_val = sum(cv_list) / len(cv_list) if cv_list else 1.0
     abs_corr = (abstain_correct / abstain_total) if abstain_total > 0 else 1.0
 
-    recall_by_type = {
-        t: round(sum(scores) / len(scores), 4) for t, scores in by_type.items()
-    }
+    recall_by_type = {t: round(sum(scores) / len(scores), 4) for t, scores in by_type.items()}
 
     return {
         "recall@3": round(recall_at_3, 4),
@@ -180,8 +178,9 @@ def main() -> int:
     parser.add_argument("--golden", type=Path, default=HERE / "golden.yaml")
     parser.add_argument("--baseline", type=Path, default=HERE / "baseline.json")
     parser.add_argument("--out", type=Path, default=HERE / "results.json")
-    parser.add_argument("--update-baseline", action="store_true",
-                        help="write these results as the new baseline")
+    parser.add_argument(
+        "--update-baseline", action="store_true", help="write these results as the new baseline"
+    )
     args = parser.parse_args()
 
     questions = load_golden(args.golden)
@@ -191,14 +190,17 @@ def main() -> int:
         for q in questions:
             started = time.perf_counter()
             response = ask(client, args.api, q["question"])
-            rows.append({
-                "id": q["id"], "type": q.get("type", "ordinary"),
-                "must_abstain": bool(q.get("must_abstain", False)),
-                "relevant": q.get("relevant") or [],
-                "expect": q.get("expect"),
-                "response": response,
-                "seconds": round(time.perf_counter() - started, 2),
-            })
+            rows.append(
+                {
+                    "id": q["id"],
+                    "type": q.get("type", "ordinary"),
+                    "must_abstain": bool(q.get("must_abstain", False)),
+                    "relevant": q.get("relevant") or [],
+                    "expect": q.get("expect"),
+                    "response": response,
+                    "seconds": round(time.perf_counter() - started, 2),
+                }
+            )
             print(f"  {q['id']:<5} {rows[-1]['seconds']:>6.2f}s  {q['question'][:60]}")
 
     results = summarise(rows)

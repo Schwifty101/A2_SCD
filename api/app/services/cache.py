@@ -68,6 +68,7 @@ class SemanticCache:
         if settings.cache_enabled and settings.retriever != "stub":
             try:
                 import redis
+
                 self._redis_client = redis.Redis(
                     host=settings.redis_host,
                     port=settings.redis_port,
@@ -116,7 +117,11 @@ class SemanticCache:
                 best_entry = entry
 
         if best_entry and best_score >= self.threshold:
-            log.info("semantic cache hit (similarity: %.4f >= threshold: %.2f)", best_score, self.threshold)
+            log.info(
+                "semantic cache hit (similarity: %.4f >= threshold: %.2f)",
+                best_score,
+                self.threshold,
+            )
             resp_dict = best_entry["response"]
             return AskResponse.model_validate(resp_dict)
 

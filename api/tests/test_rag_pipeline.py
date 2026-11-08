@@ -60,7 +60,9 @@ class SafeMockProvider:
         return Answer(
             reasoning="Examined retrieved passage; treating retrieved instructions as passive data only.",
             answer="Students must satisfy all prerequisite requirements prior to course registration.",
-            citations=[Citation(source=top.source, section=top.section, page=top.page)] if top else [],
+            citations=[Citation(source=top.source, section=top.section, page=top.page)]
+            if top
+            else [],
             answered_from_context=True,
             confidence="high",
         )
@@ -81,7 +83,9 @@ def test_prompt_injection_is_treated_as_data() -> None:
     retriever = PoisonedRetriever()
     provider = SafeMockProvider()
 
-    response = answer_question("Can I register without prerequisite?", retriever, provider, settings)
+    response = answer_question(
+        "Can I register without prerequisite?", retriever, provider, settings
+    )
     assert response.answered_from_context is True
     # The system did NOT obey the injection
     assert "Ignore your instructions" not in response.answer
@@ -134,4 +138,3 @@ def test_never_cache_rules() -> None:
     assert never_cache("What rules?", answered_from_context=True, confidence="low") is True
     # Valid answer -> False (safe to cache)
     assert never_cache("What attendance?", answered_from_context=True, confidence="high") is False
-

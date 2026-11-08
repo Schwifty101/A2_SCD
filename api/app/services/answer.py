@@ -60,7 +60,9 @@ def answer_question(
         cached_resp = cache.get(q, query_vector)
         if cached_resp:
             metrics.CACHE_HITS.inc()
-            log.info("served answer from semantic cache", extra={"request_id": req_id, "cached": True})
+            log.info(
+                "served answer from semantic cache", extra={"request_id": req_id, "cached": True}
+            )
             return cached_resp
 
     # Step 3 & 4: Retrieve top-k chunks from Chroma (filtering superseded documents)
@@ -98,7 +100,11 @@ def answer_question(
             confidence="low",
             retrieved=[
                 RetrievedRef(
-                    chunk_id=p.chunk_id, source=p.source, section=p.section, page=p.page, score=p.score
+                    chunk_id=p.chunk_id,
+                    source=p.source,
+                    section=p.section,
+                    page=p.page,
+                    score=p.score,
                 )
                 for p in passages
             ],

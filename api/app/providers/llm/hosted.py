@@ -36,7 +36,9 @@ class HostedProvider:
                 f"[Passage {idx}] Source: {p.source} | Section: {p.section} | Page: {p.page or 'N/A'}\n"
                 f"<<<EVIDENCE\n{p.text}\nEVIDENCE>>>"
             )
-        evidence_block = "\n\n".join(evidence_lines) if evidence_lines else "No relevant passages found."
+        evidence_block = (
+            "\n\n".join(evidence_lines) if evidence_lines else "No relevant passages found."
+        )
 
         schema = Answer.model_json_schema()
         user_content = (
@@ -86,7 +88,11 @@ class HostedProvider:
 
             except (ValidationError, json.JSONDecodeError, ValueError) as val_err:
                 last_error = f"Validation failed: {val_err}"
-                log.warning("Attempt %d validation failure on hosted provider: %s. Retrying...", attempt, val_err)
+                log.warning(
+                    "Attempt %d validation failure on hosted provider: %s. Retrying...",
+                    attempt,
+                    val_err,
+                )
             except httpx.TimeoutException as time_err:
                 last_error = f"Hosted provider timeout after {self.timeout}s: {time_err}"
                 log.error("Attempt %d timeout calling hosted endpoint: %s", attempt, time_err)

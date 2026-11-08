@@ -17,7 +17,10 @@ def _clean_page_text(text: str) -> str:
         re.compile(r"^\s*page\s+\d+(\s+of\s+\d+)?\s*$", re.IGNORECASE),
         re.compile(r"^\s*\d+\s*/\s*\d+\s*$"),
         re.compile(r"^\s*fast-nuces\s*[-–]\s*academic\s+rules\s*$", re.IGNORECASE),
-        re.compile(r"^\s*national\s+university\s+of\s+computer\s+and\s+emerging\s+sciences\s*$", re.IGNORECASE),
+        re.compile(
+            r"^\s*national\s+university\s+of\s+computer\s+and\s+emerging\s+sciences\s*$",
+            re.IGNORECASE,
+        ),
         re.compile(r"^\s*student\s+handbook\s+2026\s*$", re.IGNORECASE),
     ]
 
