@@ -92,7 +92,11 @@ def run_pipeline(settings: IndexerSettings) -> int:
 
     documents = discover(settings.corpus_dir)
     if not documents:
-        raise SystemExit(f"no documents found in {settings.corpus_dir}")
+        from .dummy import write_dummy_index
+        from .store import get_client
+
+        log("no documents found in corpus dir, falling back to dummy index")
+        return write_dummy_index(settings, get_client(settings))
     all_chunks: list[Chunk] = []
     for path, doc_version, superseded in documents:
         doc = clean(extract(str(path), doc_version, superseded))
