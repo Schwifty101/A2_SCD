@@ -14,15 +14,13 @@
 According to **Section 7 (Page 17)** of the assignment specification (*"What to submit on Google Classroom"*), submit the following:
 
 ### Item 1: GitHub Repository URL
-* **URL**: `https://github.com/<your-github-username>/rahbar`
-  > Ensure the repository is **public** or private with both course instructors added as collaborators.
+* **URL**: `https://github.com/omama-mubashir/I243007_A2_Rahbar`
 
 ### Item 2: Link to Successful `cd.yml` Run
-* **Actions Link**: `https://github.com/<your-github-username>/rahbar/actions/workflows/cd.yml`
-  > Triggered automatically upon pushing `main` or `dev`. Gated through testing, manifest validation, vulnerability scanning, and ephemeral cluster evaluation.
+* **Actions Link**: `https://github.com/omama-mubashir/I243007_A2_Rahbar/actions/workflows/cd.yml`
 
 ### Item 3: Link to Images on Docker Hub
-* **Docker Hub Repository**: `https://hub.docker.com/u/<your-dockerhub-username>`
+* **Docker Hub Repository**: `https://hub.docker.com/u/omama24i3007` (or your Docker Hub username)
   * `rahbar-api:<commit-sha>`
   * `rahbar-indexer:<commit-sha>`
   * `rahbar-ui:<commit-sha>`
@@ -72,3 +70,4 @@ git push -u origin dev
 * **CI/CD Pipelines**: `.github/workflows/ci.yml` and `.github/workflows/cd.yml`.
 * **Architectural Decisions**: `docs/adr/0001` through `0004`.
 * **Engineering Notes & Viva Prep**: `docs/ENGINEERING-NOTES.md` answering all seven questions with exact file and line references.
+
