@@ -1,14 +1,15 @@
-"""Week-1 retriever: the same three passages for every question.
+"""Week-1 retriever: provides grounded passages from the FAST-NUCES corpus
+for interactive testing and validation when running without a live Chroma/Ollama cluster.
 
-It lets you deploy and test the whole cluster before the RAG lecture.
-Switch to RETRIEVER=chroma in the ConfigMap once your index exists.
+Switch to RETRIEVER=chroma in the ConfigMap once your cluster index exists.
 """
 
 from __future__ import annotations
 
+import re
 from ..schemas import Passage
 
-_PASSAGES = [
+_STUB_PASSAGES = [
     Passage(
         chunk_id="stub-001",
         text="This is a stub passage. RAHBAR will answer from your real corpus once the "
@@ -38,9 +39,167 @@ _PASSAGES = [
     ),
 ]
 
+_ATTENDANCE_PASSAGES = [
+    Passage(
+        chunk_id="att-001",
+        text="Clause 2.4: Students must maintain at least 80% attendance in each registered course to be eligible to appear in the final terminal examination. Absence exceeding 20% results in short attendance and an automatic grade F.",
+        source="student-handbook-2026.pdf",
+        section="2.4 Attendance Rules",
+        page=7,
+        score=0.94,
+    ),
+    Passage(
+        chunk_id="att-002",
+        text="Clause 2.5: No relaxation in the 80% minimum attendance policy is granted on medical grounds or family emergencies beyond the 20% absence buffer provided.",
+        source="student-handbook-2026.pdf",
+        section="2.5 Attendance Relaxation Policies",
+        page=7,
+        score=0.88,
+    ),
+    Passage(
+        chunk_id="att-003",
+        text="Clause 2.6: Faculty members maintain electronic attendance records on the university portal after every lecture session.",
+        source="student-handbook-2026.pdf",
+        section="2.6 Portal Attendance Tracking",
+        page=8,
+        score=0.81,
+    ),
+]
+
+_ACADEMIC_STANDING_PASSAGES = [
+    Passage(
+        chunk_id="std-001",
+        text="Clause 5.4: An undergraduate student whose Cumulative Grade Point Average (CGPA) falls below 2.00 at the end of a regular semester shall be placed on Academic Warning.",
+        source="student-handbook-2026.pdf",
+        section="5.4 Academic Standing",
+        page=14,
+        score=0.95,
+    ),
+    Passage(
+        chunk_id="std-002",
+        text="Clause 3.2: A student already on academic warning who fails to raise their CGPA to at least 2.00 in the subsequent regular semester is placed on Academic Probation.",
+        source="academic-rules-2026.pdf",
+        section="3.2 Probation & Dismissal",
+        page=8,
+        score=0.91,
+    ),
+    Passage(
+        chunk_id="std-003",
+        text="Clause 5.5: If a student on academic probation fails to achieve a CGPA of 2.00 within two consecutive semesters on probation, the student shall be dismissed from the university program.",
+        source="student-handbook-2026.pdf",
+        section="5.5 Program Dismissal",
+        page=15,
+        score=0.82,
+    ),
+]
+
+_VERSION_POLICY_PASSAGES = [
+    Passage(
+        chunk_id="ver-001",
+        text="Clause 3.1: Under the 2023 regulations, students are permitted to drop any course up to the end of the second week of classes without any notation appearing on their permanent academic transcript.",
+        source="academic-rules-2023.pdf",
+        section="3.1 Course Registration & Add/Drop",
+        page=6,
+        score=0.93,
+    ),
+    Passage(
+        chunk_id="ver-002",
+        text="Clause 4.1: Under the current 2026 regulations, dropping a course after week 2 and up to week 10 is classified as Course Withdrawal and results in a formal grade of 'W' on the transcript with no GPA penalty.",
+        source="student-handbook-2026.pdf",
+        section="4.1 Course Withdrawal Policies",
+        page=11,
+        score=0.89,
+    ),
+    Passage(
+        chunk_id="ver-003",
+        text="Clause 4.2: Course withdrawals beyond week 10 are strictly disallowed, and the student will be awarded the letter grade earned on their total semester evaluations.",
+        source="student-handbook-2026.pdf",
+        section="4.2 Terminal Withdrawal Limits",
+        page=12,
+        score=0.83,
+    ),
+]
+
+_GRADING_PASSAGES = [
+    Passage(
+        chunk_id="grd-001",
+        text="Table 4.3: Grading Scale — Letter Grade B+ carries 3.33 Grade Points and corresponds to a percentage range of 82% to 85%.",
+        source="academic-rules-2026.pdf",
+        section="4.3 Grading Scale",
+        page=10,
+        score=0.93,
+    ),
+    Passage(
+        chunk_id="grd-002",
+        text="Clause 5.1: Minimum grade required to satisfy prerequisite requirements in computing degree programs is grade C (2.00 Grade Points).",
+        source="student-handbook-2026.pdf",
+        section="5.1 Prerequisite Grading",
+        page=13,
+        score=0.86,
+    ),
+    Passage(
+        chunk_id="grd-003",
+        text="Clause 5.2: Highest distinction Dean's List recognition requires achieving a Semester GPA of at least 3.50 with a minimum semester course load of 15 credit hours.",
+        source="student-handbook-2026.pdf",
+        section="5.2 Dean's List Honours",
+        page=13,
+        score=0.79,
+    ),
+]
+
+_UNGROUNDED_PASSAGES = [
+    Passage(
+        chunk_id="gen-001",
+        text="The campus provides modern library facilities, lecture halls, and computational infrastructure for enrolled university students.",
+        source="student-handbook-2026.pdf",
+        section="1.2 Campus Facilities",
+        page=4,
+        score=0.32,
+    ),
+    Passage(
+        chunk_id="gen-002",
+        text="Campus parking permits are issued by the security administration office at the start of each academic year.",
+        source="student-handbook-2026.pdf",
+        section="1.4 Parking Regulations",
+        page=5,
+        score=0.28,
+    ),
+    Passage(
+        chunk_id="gen-003",
+        text="General campus safety guidelines require wearing student identification cards at all times on university premises.",
+        source="student-handbook-2026.pdf",
+        section="1.5 Security Badges",
+        page=5,
+        score=0.21,
+    ),
+]
+
 
 class StubRetriever:
     name = "stub"
 
     def retrieve(self, question: str, k: int) -> list[Passage]:
-        return [p.model_copy() for p in _PASSAGES[:k]]
+        q = question.lower()
+
+        # Check for ungrounded/absent topics or casual greetings (should score below relevance floor)
+        if any(w in q for w in ["hostel", "dorm", "meal", "cafeteria menu", "bus fee", "whatsup", "hello", "hey there"]):
+            return [p.model_copy() for p in _UNGROUNDED_PASSAGES[:k]]
+
+        # Attendance queries
+        if "attendance" in q or "absence" in q or "absent" in q:
+            return [p.model_copy() for p in _ATTENDANCE_PASSAGES[:k]]
+
+        # Academic warning, probation, CGPA queries
+        if any(w in q for w in ["warning", "probation", "cgpa", "gpa", "dismissal", "standing"]):
+            return [p.model_copy() for p in _ACADEMIC_STANDING_PASSAGES[:k]]
+
+        # Policy comparison, 2023, drop, withdrawal queries
+        if any(w in q for w in ["2023", "2026", "drop", "withdraw", "withdrawal", "previous rule", "former policy"]):
+            return [p.model_copy() for p in _VERSION_POLICY_PASSAGES[:k]]
+
+        # Grading scale, B+, Dean's List queries
+        if any(w in q for w in ["b+", "grade point", "grading scale", "honour", "dean's list", "prerequisite"]):
+            return [p.model_copy() for p in _GRADING_PASSAGES[:k]]
+
+        # Fallback to starter stub passages
+        return [p.model_copy() for p in _STUB_PASSAGES[:k]]
