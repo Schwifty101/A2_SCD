@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: read
+  packages: write
 
 jobs:
   test:
@@ -38,7 +39,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Log in to Docker Hub
+      - name: Downcase repository owner
+        id: repo
+        run: echo "owner=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to Docker Hub (if secrets configured)
+        if: "${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}"
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -53,8 +66,8 @@ jobs:
           context: api
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/rahbar-api:${{ github.sha }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/rahbar-api:latest
+            ghcr.io/${{ steps.repo.outputs.owner }}/rahbar-api:${{ github.sha }}
+            ghcr.io/${{ steps.repo.outputs.owner }}/rahbar-api:latest
 
       - name: Build and push Indexer Image
         uses: docker/build-push-action@v6
@@ -62,8 +75,8 @@ jobs:
           context: indexer
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/rahbar-indexer:${{ github.sha }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/rahbar-indexer:latest
+            ghcr.io/${{ steps.repo.outputs.owner }}/rahbar-indexer:${{ github.sha }}
+            ghcr.io/${{ steps.repo.outputs.owner }}/rahbar-indexer:latest
 
       - name: Build and push UI Image
         uses: docker/build-push-action@v6
@@ -71,8 +84,8 @@ jobs:
           context: ui
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/rahbar-ui:${{ github.sha }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/rahbar-ui:latest
+            ghcr.io/${{ steps.repo.outputs.owner }}/rahbar-ui:${{ github.sha }}
+            ghcr.io/${{ steps.repo.outputs.owner }}/rahbar-ui:latest
 
   deploy:
     name: Ephemeral Cluster Deployment & Verification
@@ -86,6 +99,15 @@ jobs:
         uses: helm/kind-action@v1.12.0
         with:
           cluster_name: rahbar-deploy
+
+      - name: Build and load local images into kind
+        run: |
+          docker build -t rahbar-api:dev api
+          docker build -t rahbar-indexer:dev indexer
+          docker build -t rahbar-ui:dev ui
+          kind load docker-image rahbar-api:dev --name rahbar-deploy
+          kind load docker-image rahbar-indexer:dev --name rahbar-deploy
+          kind load docker-image rahbar-ui:dev --name rahbar-deploy
 
       - name: Deploy application stack
         run: |
@@ -106,4 +128,3 @@ jobs:
           sleep 4
           curl -s -f http://127.0.0.1:8000/healthz | grep "alive"
           echo "Smoke test passed successfully."
-
