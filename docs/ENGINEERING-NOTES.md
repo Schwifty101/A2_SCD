@@ -1,6 +1,6 @@
 # Engineering Notes: Seven Questions on Production RAG Architecture
 
-Author: Omama Mubashir (Solo Submission)  
+Author: Omama Mubashir (Roll No: **24I-3007**, Department: **BSSE**, Section: **A**) — Solo Submission  
 Repository: `omama-mubashir/rahbar`
 
 ---

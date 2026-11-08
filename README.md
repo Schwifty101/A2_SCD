@@ -7,7 +7,7 @@
 
 **RAHBAR** is a grounded, schema-constrained question-answering system over statutory FAST-NUCES university policy documents. Built for production resilience on Kubernetes, it answers strictly from authoritative document evidence, cites specific policy clauses and pages, and abstains honestly when information is absent.
 
-Developed by **Omama Mubashir** (Solo Submission) for CS4032 Software Construction & Development.
+Developed by **Omama Mubashir** (Roll No: **24I-3007**, Department: **BSSE**, Section: **A**) — Solo Submission for CS4032 / Software Construction & Development.
 
 ---
 

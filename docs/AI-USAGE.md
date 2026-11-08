@@ -1,6 +1,6 @@
 # AI Usage Disclosure
 
-**Student**: Omama Mubashir (Solo Submission)  
+**Student**: Omama Mubashir (Roll No: **24I-3007**, Department: **BSSE**, Section: **A**) — Solo Submission  
 **Course**: CS4032 Software Construction & Development — Assignment 02: RAHBAR
 
 In accordance with Section 8 of the course policy, this document provides an honest, comprehensive disclosure of the AI tools utilized throughout the design, implementation, and evaluation of this assignment.
