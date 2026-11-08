@@ -20,10 +20,10 @@ According to **Section 7 (Page 17)** of the assignment specification (*"What to 
 * **Actions Link**: `https://github.com/omama-mubashir/I243007_A2_Rahbar/actions/workflows/cd.yml`
 
 ### Item 3: Link to Images on Docker Hub
-* **Docker Hub Repository**: `https://hub.docker.com/u/omama24i3007` (or your Docker Hub username)
-  * `rahbar-api:<commit-sha>`
-  * `rahbar-indexer:<commit-sha>`
-  * `rahbar-ui:<commit-sha>`
+* **Docker Hub Repository**: `https://hub.docker.com/u/omamamubashir`
+  * `omamamubashir/rahbar-api:cc4ef44`
+  * `omamamubashir/rahbar-indexer:cc4ef44`
+  * `omamamubashir/rahbar-ui:cc4ef44`
 
 ### Item 4: Committed Evaluation Files
 * `eval/baseline.json` (Committed in repository root)
