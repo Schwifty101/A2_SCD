@@ -63,7 +63,7 @@ class SemanticCache:
         self.settings = settings
         self.threshold = settings.cache_threshold
         self._memory_cache: list[dict[str, Any]] = []
-        self._redis_client = None
+        self._redis_client: Any = None
 
         if settings.cache_enabled and settings.retriever != "stub":
             try:
