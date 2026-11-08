@@ -123,27 +123,27 @@ _VERSION_POLICY_PASSAGES = [
 _GRADING_PASSAGES = [
     Passage(
         chunk_id="grd-001",
-        text="Table 4.3: Grading Scale — Letter Grade B+ carries 3.33 Grade Points and corresponds to a percentage range of 82% to 85%.",
+        text="Table 4.3: Grading Scale — The minimum threshold to pass a course is 50% (50 absolute marks), corresponding to grade D (1.00 Grade Point). Any total below 50% receives a failing grade 'F' (0.00 Grade Points). Letter Grade B+ carries 3.33 Grade Points (82%–85%).",
         source="academic-rules-2026.pdf",
         section="4.3 Grading Scale",
         page=10,
-        score=0.93,
+        score=0.94,
     ),
     Passage(
         chunk_id="grd-002",
-        text="Clause 5.1: Minimum grade required to satisfy prerequisite requirements in computing degree programs is grade C (2.00 Grade Points).",
+        text="Clause 5.1: Minimum grade required to satisfy prerequisite requirements in computing degree programs is grade C (2.00 Grade Points, 60% marks). A grade of D earns credit hours but does not satisfy downstream prerequisite dependencies.",
         source="student-handbook-2026.pdf",
         section="5.1 Prerequisite Grading",
         page=13,
-        score=0.86,
+        score=0.88,
     ),
     Passage(
         chunk_id="grd-003",
-        text="Clause 5.2: Highest distinction Dean's List recognition requires achieving a Semester GPA of at least 3.50 with a minimum semester course load of 15 credit hours.",
-        source="student-handbook-2026.pdf",
-        section="5.2 Dean's List Honours",
-        page=13,
-        score=0.79,
+        text="Clause 4.5: Course evaluation consists of quizzes, assignments, midterm examinations, and terminal final examination totaling 100 absolute marks.",
+        source="academic-rules-2026.pdf",
+        section="4.5 Course Evaluation Components",
+        page=11,
+        score=0.82,
     ),
 ]
 
@@ -197,8 +197,8 @@ class StubRetriever:
         if any(w in q for w in ["2023", "2026", "drop", "withdraw", "withdrawal", "previous", "former", "repeal"]):
             return [p.model_copy() for p in _VERSION_POLICY_PASSAGES[:k]]
 
-        # Grading scale, B+, Dean's List, prerequisites, credit hours queries
-        if any(w in q for w in ["b+", "grade", "grading", "scale", "honour", "dean's list", "prerequisite", "credit"]):
+        # Grading scale, B+, Dean's List, prerequisites, credit hours, passing marks queries
+        if any(w in q for w in ["b+", "grade", "grading", "scale", "honour", "dean's list", "prerequisite", "credit", "pass", "fail", "marks", "absolute", "absolutes", "exam", "score"]):
             return [p.model_copy() for p in _GRADING_PASSAGES[:k]]
 
         # Any off-topic query (movies, space, general chat, ungrounded questions)

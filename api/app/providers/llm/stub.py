@@ -73,6 +73,16 @@ class StubProvider:
                 confidence="high",
             )
 
+        # Passing thresholds, absolute marks, 49 absolutes
+        if any(w in q for w in ["pass", "fail", "absolute", "absolutes", "49", "50", "marks", "exam"]):
+            return Answer(
+                reasoning="stub: answered from grading scale minimum passing threshold",
+                answer="Under FAST-NUCES grading regulations (Table 4.3), the minimum score required to pass a course is 50% (50 absolute marks), which earns the minimum passing grade of 'D' (1.00 Grade Point). A total of 49 absolute marks is below the 50% passing threshold and results in a failing grade of 'F' (0.00 Grade Points), unless absolute scores are adjusted via relative grading moderation or bell-curving by the instructor.",
+                citations=[Citation(source=top.source, section=top.section, page=top.page)],
+                answered_from_context=True,
+                confidence="high",
+            )
+
         # Grading scale / B+
         if any(w in q for w in ["b+", "grading", "scale", "grade point"]):
             return Answer(
