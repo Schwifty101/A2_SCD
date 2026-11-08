@@ -4,10 +4,12 @@ Stores question embeddings and verified answers with similarity thresholding and
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import math
 import re
+import time
 from typing import Any
 
 from ..config import Settings
@@ -64,6 +66,7 @@ class SemanticCache:
         self.threshold = settings.cache_threshold
         self._memory_cache: list[dict[str, Any]] = []
         self._redis_client: Any = None
+        self._epoch_val, self._epoch_at = "0", -1e9
 
         if settings.cache_enabled and settings.retriever != "stub":
             try:
@@ -81,6 +84,28 @@ class SemanticCache:
                 log.warning("Redis unavailable (%s), using in-memory semantic cache fallback", exc)
                 self._redis_client = None
 
+    def _epoch(self) -> str:
+        """Index generation: collection metadata `indexed_at`, written by the indexer Job.
+        A re-index changes it, so every older cache entry stops matching (section 3.3)."""
+        if self.settings.retriever == "stub":
+            return "stub"
+        now = time.monotonic()
+        if now - self._epoch_at > 10:
+            try:
+                import chromadb
+                from chromadb.config import Settings as CS
+
+                col = chromadb.HttpClient(
+                    host=self.settings.chroma_host,
+                    port=self.settings.chroma_port,
+                    settings=CS(anonymized_telemetry=False),
+                ).get_collection(self.settings.collection)
+                self._epoch_val = str((col.metadata or {}).get("indexed_at", "0"))
+                self._epoch_at = now
+            except Exception as exc:
+                log.warning("cache epoch lookup failed (%s); reusing %s", exc, self._epoch_val)
+        return self._epoch_val
+
     def get(self, question: str, query_vector: list[float]) -> AskResponse | None:
         """Check cache against similarity threshold. Returns cached AskResponse on hit."""
         if not self.settings.cache_enabled:
@@ -93,10 +118,11 @@ class SemanticCache:
         best_entry = None
 
         # If Redis is active, sync entries from Redis
-        entries = self._memory_cache
+        epoch = self._epoch()
+        entries = [e for e in self._memory_cache if e.get("epoch") == epoch]
         if self._redis_client:
             try:
-                keys = self._redis_client.keys("cache:*")
+                keys = self._redis_client.keys(f"cache:{epoch}:*")
                 redis_entries = []
                 for k in keys:
                     data = self._redis_client.get(k)
@@ -149,13 +175,14 @@ class SemanticCache:
         entry = {
             "question": question,
             "vector": query_vector,
+            "epoch": self._epoch(),
             "response": response.model_dump(),
         }
         self._memory_cache.append(entry)
 
         if self._redis_client:
             try:
-                key = f"cache:{len(self._memory_cache)}"
+                key = f"cache:{entry['epoch']}:{hashlib.sha1(question.encode()).hexdigest()}"
                 self._redis_client.set(key, json.dumps(entry), ex=86400)
             except Exception as exc:
                 log.warning("failed to write to Redis: %s", exc)

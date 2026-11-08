@@ -7,12 +7,14 @@ data:
   CHUNK_SIZE: "400"
   CHUNK_OVERLAP: "50"
   TOP_K: "5"
-  TEMPERATURE: "0.2"
+  TEMPERATURE: "0.2"  # facts + JSON: low, but not 0 so the one retry can differ
   RELEVANCE_FLOOR: "0.65"
   CACHE_THRESHOLD: "0.90"
-  EMBED_MODEL: "nomic-embed-text"
-  LLM_PROVIDER: "stub"
-  LLM_MODEL: "llama3.2:3b"
+  EMBED_MODEL: "BAAI/bge-small-en-v1.5"  # local ONNX (fastembed), 384-d; baked into api + indexer images
+  LLM_PROVIDER: "hosted"  # Groq; key comes from Secret rahbar-secret
+  RETRIEVER: "chroma"
+  HOSTED_BASE_URL: "https://api.groq.com/openai/v1"
+  LLM_MODEL: "llama-3.1-8b-instant"
   CHROMA_HOST: "chroma"
   CHROMA_PORT: "8000"
   CHROMA_COLLECTION: "rahbar"

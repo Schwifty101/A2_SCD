@@ -1,10 +1,8 @@
 # Assignment 02: RAHBAR — Final Submission Deliverable
 
 **Course**: CS4032 — Software Construction & Development  
-**Student Name**: Omama Mubashir  
-**Roll Number**: 24I-3007  
-**Department**: BSSE (Bachelor of Science in Software Engineering)  
-**Section**: A  
+**Student Name**: Soban Ahmad  
+**Roll Number**: 22i2460  
 **Submission Type**: Solo Student Submission (No Partner)  
 
 ---
@@ -14,16 +12,16 @@
 According to **Section 7 (Page 17)** of the assignment specification (*"What to submit on Google Classroom"*), submit the following:
 
 ### Item 1: GitHub Repository URL
-* **URL**: `https://github.com/omama-mubashir/I243007_A2_Rahbar`
+* **URL**: `https://github.com/Schwifty101/A2_SCD`
 
 ### Item 2: Link to Successful `cd.yml` Run
-* **Actions Link**: `https://github.com/omama-mubashir/I243007_A2_Rahbar/actions/workflows/cd.yml`
+* **Actions Link**: `https://github.com/Schwifty101/A2_SCD/actions/workflows/cd.yml`
 
 ### Item 3: Link to Images on Docker Hub
-* **Docker Hub Repository**: `https://hub.docker.com/u/omamamubashir`
-  * `omamamubashir/rahbar-api:cc4ef44`
-  * `omamamubashir/rahbar-indexer:cc4ef44`
-  * `omamamubashir/rahbar-ui:cc4ef44`
+* **Docker Hub Repository**: `https://hub.docker.com/u/schwifty404`
+  * `schwifty404/rahbar-api:cc4ef44`
+  * `schwifty404/rahbar-indexer:cc4ef44`
+  * `schwifty404/rahbar-ui:cc4ef44`
 
 ### Item 4: Committed Evaluation Files
 * `eval/baseline.json` (Committed in repository root)

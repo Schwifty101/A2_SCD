@@ -84,5 +84,6 @@ def test_chroma_retriever_empty() -> None:
 
     with patch("chromadb.HttpClient", return_value=fake_client):
         retriever = ChromaRetriever(settings)
+        retriever._embed_query = lambda q: [0.0] * 384  # type: ignore[method-assign]
         results = retriever.retrieve("Any question", k=3)
         assert results == []

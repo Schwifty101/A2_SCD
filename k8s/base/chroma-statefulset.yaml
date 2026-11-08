@@ -19,6 +19,7 @@ spec:
         app.kubernetes.io/component: vectorstore
     spec:
       automountServiceAccountToken: false
+      enableServiceLinks: false  # Service 'chroma' would inject CHROMA_PORT=tcp://..., which Chroma parses as its port
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -52,7 +53,7 @@ spec:
               memory: 1Gi
           volumeMounts:
             - name: chroma-data
-              mountPath: /chroma/data
+              mountPath: /data  # image persists to /data (PERSIST_DIRECTORY is ignored in 1.0.x)
   volumeClaimTemplates:
     - metadata:
         name: chroma-data

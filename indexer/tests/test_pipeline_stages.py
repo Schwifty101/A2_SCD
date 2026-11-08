@@ -55,11 +55,15 @@ def test_chunk_creates_structure_aware_chunks() -> None:
     assert any("Attendance" in c.section or "1.1 Attendance" in c.text for c in chunks)
 
 
-def test_embed_fallback() -> None:
-    settings = get_settings()
-    vectors = embed(["Test sentence 1", "Test sentence 2"], settings)
-    assert len(vectors) == 2
-    assert len(vectors[0]) > 0
+def test_embed_fails_loudly_on_unknown_model() -> None:
+    # No silent fake vectors: an unusable model must stop the Job (section 4.4).
+    import dataclasses
+
+    import pytest
+
+    settings = dataclasses.replace(get_settings(), embed_model="no-such-model")
+    with pytest.raises(ValueError):
+        embed(["Test sentence"], settings)
 
 
 def test_store_upsert(monkeypatch) -> None:

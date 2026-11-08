@@ -1,0 +1,11 @@
+# Corpus input for the indexer Job and the reindex CronJob. Filled by `make corpus`.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: corpus-data
+  namespace: rahbar
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 1Gi

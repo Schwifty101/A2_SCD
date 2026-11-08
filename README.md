@@ -1,13 +1,13 @@
 # RAHBAR: Grounded Question-Answering on Kubernetes
 
-[![CI](https://github.com/omama-mubashir/I243007_A2_Rahbar/actions/workflows/ci.yml/badge.svg)](https://github.com/omama-mubashir/I243007_A2_Rahbar/actions/workflows/ci.yml)
+[![CI](https://github.com/Schwifty101/A2_SCD/actions/workflows/ci.yml/badge.svg)](https://github.com/Schwifty101/A2_SCD/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-brightgreen.svg)](https://python.org)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.30%2B-blue.svg)](https://kubernetes.io)
 
 **RAHBAR** is a grounded, schema-constrained question-answering system over statutory FAST-NUCES university policy documents. Built for production resilience on Kubernetes, it answers strictly from authoritative document evidence, cites specific policy clauses and pages, and abstains honestly when information is absent.
 
-Developed by **Omama Mubashir** (Roll No: **24I-3007**, Department: **BSSE**, Section: **A**) — Solo Submission for CS4032 / Software Construction & Development.
+Developed by **Soban Ahmad** (Roll No: **22i2460**) — Solo Submission for CS4032 / Software Construction & Development.
 
 ---
 

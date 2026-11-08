@@ -1,45 +1,29 @@
-"""Stage 4: Embed. One vector per chunk, from the pinned model only."""
+"""Stage 4: Embed. One vector per chunk, from the pinned model only.
+
+Local ONNX embeddings (fastembed): Groq has no embeddings API, and a local model keeps the
+indexer and the API on byte-identical vectors. Fails loudly: a fake vector here would be a
+silent index/query disagreement (section 4.4).
+"""
 
 from __future__ import annotations
 
 import logging
-
-import httpx
+from functools import lru_cache
 
 from .config import IndexerSettings
 
 log = logging.getLogger("rahbar.indexer.embed")
 
 
+@lru_cache(maxsize=1)
+def _model(name: str):  # type: ignore[no-untyped-def]
+    from fastembed import TextEmbedding
+
+    return TextEmbedding(model_name=name)
+
+
 def embed(texts: list[str], settings: IndexerSettings) -> list[list[float]]:
-    """Embed with settings.embed_model and nothing else.
-    Calls POST {ollama_url}/api/embed in batches.
-    """
+    """Embed with settings.embed_model and nothing else."""
     if not texts:
         return []
-
-    # Batch calls to prevent timeouts and optimize throughput
-    batch_size = 32
-    all_vectors: list[list[float]] = []
-    embed_model = settings.embed_model
-    url = f"{settings.ollama_url.rstrip('/')}/api/embed"
-
-    for i in range(0, len(texts), batch_size):
-        batch = texts[i : i + batch_size]
-        try:
-            with httpx.Client(timeout=120.0) as client:
-                res = client.post(url, json={"model": embed_model, "input": batch})
-                res.raise_for_status()
-                data = res.json()
-                embeddings = data.get("embeddings") or []
-                all_vectors.extend(embeddings)
-        except Exception as exc:
-            log.warning(
-                "Ollama embed call failed (%s). Generating deterministic vectors for test/dev.", exc
-            )
-            from .dummy import fake_vector
-
-            for t in batch:
-                all_vectors.append(fake_vector(t))
-
-    return all_vectors
+    return [v.tolist() for v in _model(settings.embed_model).embed(texts, batch_size=8)]

@@ -1,6 +1,6 @@
 GitHub Repository Branch Protection Configuration: main
 ------------------------------------------------------------
-Repository: omama-mubashir/rahbar (Solo Developer)
+Repository: Schwifty101/A2_SCD (Solo Developer)
 Target Branch: main
 
 Rule Settings:

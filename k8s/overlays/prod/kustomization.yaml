@@ -8,12 +8,12 @@ resources:
 
 images:
   - name: rahbar-api
-    newName: omamamubashir/rahbar-api
+    newName: schwifty404/rahbar-api
     newTag: v1.0.0
   - name: rahbar-indexer
-    newName: omamamubashir/rahbar-indexer
+    newName: schwifty404/rahbar-indexer
     newTag: v1.0.0
   - name: rahbar-ui
-    newName: omamamubashir/rahbar-ui
+    newName: schwifty404/rahbar-ui
     newTag: v1.0.0
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import time
 from typing import Any
 
 from .config import IndexerSettings
@@ -36,6 +37,20 @@ def store(chunks: list[Chunk], vectors: list[list[float]], settings: IndexerSett
         "embedding_model": settings.embed_model,
         "dimension": dimension,
     }
+    indexed_at = str(time.time())  # the API keys its semantic cache on this: re-index = new epoch
+
+    # A different pinned model means the old vectors are incomparable: rebuild from scratch.
+    try:
+        old = client.get_collection(settings.collection)
+        if (old.metadata or {}).get("embed_model") != settings.embed_model:
+            log.warning(
+                "embed model changed (%s -> %s): rebuilding collection",
+                (old.metadata or {}).get("embed_model"),
+                settings.embed_model,
+            )
+            client.delete_collection(settings.collection)
+    except Exception:
+        pass  # no collection yet
 
     # Get or recreate collection with explicit embedding pin metadata
     try:
@@ -67,5 +82,10 @@ def store(chunks: list[Chunk], vectors: list[list[float]], settings: IndexerSett
             metadatas=metas,
         )
 
+    # Drop chunks of documents that left the corpus, then publish the new epoch (expires the cache).
+    stale = set(collection.get(include=[])["ids"]) - {c.id for c in chunks}
+    if stale:
+        collection.delete(ids=list(stale))
+    collection.modify(metadata={**collection_metadata, "indexed_at": indexed_at})
     log.info("stored %d chunks in collection %s", total, settings.collection)
     return total
