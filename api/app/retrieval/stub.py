@@ -181,25 +181,26 @@ class StubRetriever:
     def retrieve(self, question: str, k: int) -> list[Passage]:
         q = question.lower()
 
-        # Check for ungrounded/absent topics or casual greetings (should score below relevance floor)
-        if any(w in q for w in ["hostel", "dorm", "meal", "cafeteria menu", "bus fee", "whatsup", "hello", "hey there"]):
-            return [p.model_copy() for p in _UNGROUNDED_PASSAGES[:k]]
+        # Questions explicitly asking about the stub contract (tested in test_starter.py)
+        if "stub" in q:
+            return [p.model_copy() for p in _STUB_PASSAGES[:k]]
 
         # Attendance queries
-        if "attendance" in q or "absence" in q or "absent" in q:
+        if any(w in q for w in ["attendance", "absence", "absent", "leave"]):
             return [p.model_copy() for p in _ATTENDANCE_PASSAGES[:k]]
 
-        # Academic warning, probation, CGPA queries
-        if any(w in q for w in ["warning", "probation", "cgpa", "gpa", "dismissal", "standing"]):
+        # Academic warning, probation, CGPA, dismissal queries
+        if any(w in q for w in ["warning", "probation", "cgpa", "gpa", "dismissal", "standing", "academic"]):
             return [p.model_copy() for p in _ACADEMIC_STANDING_PASSAGES[:k]]
 
-        # Policy comparison, 2023, drop, withdrawal queries
-        if any(w in q for w in ["2023", "2026", "drop", "withdraw", "withdrawal", "previous rule", "former policy"]):
+        # Policy comparison, 2023 vs 2026, drop, withdrawal queries
+        if any(w in q for w in ["2023", "2026", "drop", "withdraw", "withdrawal", "previous", "former", "repeal"]):
             return [p.model_copy() for p in _VERSION_POLICY_PASSAGES[:k]]
 
-        # Grading scale, B+, Dean's List queries
-        if any(w in q for w in ["b+", "grade point", "grading scale", "honour", "dean's list", "prerequisite"]):
+        # Grading scale, B+, Dean's List, prerequisites, credit hours queries
+        if any(w in q for w in ["b+", "grade", "grading", "scale", "honour", "dean's list", "prerequisite", "credit"]):
             return [p.model_copy() for p in _GRADING_PASSAGES[:k]]
 
-        # Fallback to starter stub passages
-        return [p.model_copy() for p in _STUB_PASSAGES[:k]]
+        # Any off-topic query (movies, space, general chat, ungrounded questions)
+        # returns low-scoring passages below relevance floor (0.45) to trigger honest abstention
+        return [p.model_copy() for p in _UNGROUNDED_PASSAGES[:k]]
